@@ -8,15 +8,15 @@ app.get("/", (c) => {
 
 app.get("/gmgnai/sol", async (c) => {
   let res = await fetch(
-    "https://gmgn.ai/defi/quotation/v1/rank/sol/swaps/6h?orderby=swaps&direction=desc&limit=20",
+    "https://gmgn.ai/defi/quotation/v1/rank/sol/swaps/1h?orderby=swaps&direction=desc&limit=20",
   );
   let json = await res.json();
   let coins = [];
 
   json.data.rank.map((coin) => {
-    if (coin.launchpad !== "Pump.fun") {
-      return;
-    }
+    // if (coin.launchpad !== "Pump.fun") {
+    //   return;
+    // }
 
     if (coin.hot_level !== 3) {
       return;
@@ -33,4 +33,33 @@ app.get("/gmgnai/sol", async (c) => {
   });
   return c.json({ coins });
 });
+
+app.get("/gmgnai/sol-test", async (c) => {
+  let res = await fetch(
+    "https://gmgn.ai/defi/quotation/v1/rank/sol/swaps/1h?orderby=swaps&direction=desc&limit=20",
+  );
+  let json = await res.json();
+  let coins = [];
+
+  json.data.rank.map((coin) => {
+    if (coin.launchpad !== "Pump.fun") {
+      return;
+    }
+
+    if (coin.hot_level !== 2) {
+      return;
+    }
+
+    if (
+      Math.round(new Date().getTime() / 1000 - 60 * 60 * 2) >
+      coin.pool_creation_timestamp
+    ) {
+      return;
+    }
+
+    coins.push(coin);
+  });
+  return c.json({ coins });
+});
+
 export default app;
