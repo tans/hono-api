@@ -28,14 +28,14 @@ app.get("/gmgnai/sol", async (c) => {
     }
     if (
       coin.launchpad !== "Pump.fun" &&
-      Math.round(new Date().getTime() / 1000 - 60 * 60 * 0.6) <
+      Math.round(new Date().getTime() / 1000 - 60 * 60 * 0.5) <
         coin.pool_creation_timestamp
     ) {
       coins.push(coin);
       return;
     }
   });
-  return c.json({ coins });
+  return c.json({ coins, osize: json.data.rank.length });
 });
 
 app.get("/gmgnai/sol-test", async (c) => {
