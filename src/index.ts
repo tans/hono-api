@@ -14,22 +14,26 @@ app.get("/gmgnai/sol", async (c) => {
   let coins = [];
 
   json.data.rank.map((coin) => {
-    // if (coin.launchpad !== "Pump.fun") {
-    //   return;
-    // }
-
     if (coin.hot_level !== 3) {
       return;
     }
 
     if (
-      Math.round(new Date().getTime() / 1000 - 60 * 60 * 1) >
-      coin.pool_creation_timestamp
+      coin.launchpad == "Pump.fun" &&
+      Math.round(new Date().getTime() / 1000 - 60 * 60 * 1) <
+        coin.pool_creation_timestamp
     ) {
+      coins.push(coin);
       return;
     }
-
-    coins.push(coin);
+    if (
+      coin.launchpad !== "Pump.fun" &&
+      Math.round(new Date().getTime() / 1000 - 60 * 60 * 0.6) <
+        coin.pool_creation_timestamp
+    ) {
+      coins.push(coin);
+      return;
+    }
   });
   return c.json({ coins });
 });
